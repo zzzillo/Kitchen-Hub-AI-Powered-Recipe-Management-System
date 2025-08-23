@@ -15,22 +15,30 @@ function InputRecipe ({ initialData = null, onSave}) {
     const [inputValue, setInputValue] = useState('');
     const [instructions, setInstructions] = useState('');
     const [notes, setNotes] = useState('');
-    const [rows, setRows] = useState([{ name: "", quantity: "", measurement: "", notes: "" }]);
+    const [rows, setRows] = useState([{ name: "", quantity: "", notes: "" }]);
     const [recipeName, setRecipeName] = useState('');
     const [description, setDescription] = useState('');
     const [time, setTime] = useState('');
+    const [category, setCategory] = useState('');  // ✅ added category state
+    const [imagePreview, setImagePreview] = useState('');
 
     // ----- Prefill if editing -----
     useEffect(() => {
         if (initialData) {
-            setImage(initialData.image || null);
+        // Set preview to stored image (URL or path from backend)
+            setImagePreview(initialData.image || '');
+        
+            // No new file chosen yet
+            setImage(null);
+            setImage(initialData.image ? { preview: initialData.image, file: null } : null);
             setTags(initialData.tags || []);
             setInstructions(initialData.instructions || '');
             setNotes(initialData.notes || '');
-            setRows(initialData.ingredients?.length ? [...initialData.ingredients, { name: "", quantity: "", measurement: "", notes: "" }] : [{ name: "", quantity: "", measurement: "", notes: "" }]);
+            setRows(initialData.ingredients?.length ? [...initialData.ingredients, { name: "", quantity: "", notes: "" }] : [{ name: "", quantity: "", notes: "" }]);
             setRecipeName(initialData.recipeName || '');
             setDescription(initialData.description || '');
             setTime(initialData.time || '');
+            setCategory(initialData.category || '');
         }
     }, [initialData]);
 
@@ -42,7 +50,7 @@ function InputRecipe ({ initialData = null, onSave}) {
 
         // If editing last row and has data, add a new blank row
         if (index === rows.length - 1 && Object.values(newRows[index]).some(v => v !== "")) {
-            newRows.push({ name: "", quantity: "", measurement: "", notes: "" });
+            newRows.push({ name: "", quantity: "", notes: "" });
             setRows(newRows);
         }
     };
@@ -65,7 +73,8 @@ function InputRecipe ({ initialData = null, onSave}) {
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setImage(URL.createObjectURL(file));
+            setImagePreview(URL.createObjectURL(file));
+            setImage(file); 
         }
     };
 
@@ -77,6 +86,7 @@ function InputRecipe ({ initialData = null, onSave}) {
             description,
             time,
             tags,
+            category,
             instructions,
             notes,
             ingredients: rows.filter(row => Object.values(row).some(v => v !== "")) // remove last empty row
@@ -118,7 +128,7 @@ function InputRecipe ({ initialData = null, onSave}) {
                         </label>
                     ) : (
                         <div className="relative w-full h-full">
-                            <img src={image} alt="Preview" className=" border-y-2 border-l-2 border-green rounded-l-lg w-full h-full object-cover"/>
+                            <img src={imagePreview} alt="Preview" className=" border-y-2 border-l-2 border-green rounded-l-lg w-full h-full object-cover"/>
                             <button onClick={() => setImage(null)} className="absolute top-2 left-2 bg-green bg-opacity-60 text-white px-2 py-1 text-xs rounded">
                                 Change
                             </button>
@@ -154,7 +164,7 @@ function InputRecipe ({ initialData = null, onSave}) {
                     {/* Tags */}
                     <div className="flex flex-row px-3 pt-3 overflow-x-auto gap-2 scrollbar-hide">
                         <div className="flex items-center rounded-sm bg-green-900 h-8 px-3">
-                            <input type="text" placeholder="Category" className="text-sm text-white bg-transparent font-bold min-w-16 field-sizing-content focus:outline-none focus:ring-0 focus:border-transparent"/>
+                            <input type="text" placeholder="Category" onChange={(e) => setCategory(e.target.value)} className="text-sm text-white bg-transparent font-bold min-w-16 field-sizing-content focus:outline-none focus:ring-0 focus:border-transparent"/>
                         </div>
                         <div className='flex items-center rounded-sm bg-green h-8 px-3'>
                             <input
@@ -194,7 +204,6 @@ function InputRecipe ({ initialData = null, onSave}) {
                                 <tr className="bg-green">
                                     <th className="px-2 py-1 text-white">Name</th>
                                     <th className="px-2 py-1 text-white">Quantity</th>
-                                    <th className="px-2 py-1 text-white">Measurement</th>
                                     <th className="px-2 py-1 text-white">Notes</th>
                                     <th className="px-2 py-1 text-white">Delete</th>
                                 </tr>
@@ -215,14 +224,6 @@ function InputRecipe ({ initialData = null, onSave}) {
                                                 type="text"
                                                 value={row.quantity}
                                                 onChange={(e) => handleChange(index, "quantity", e.target.value)}
-                                                className="w-full focus:outline-none"
-                                            />
-                                        </td>
-                                        <td className="w-1/5 border-b border-green px-2 py-1">
-                                            <input
-                                                type="text"
-                                                value={row.measurement}
-                                                onChange={(e) => handleChange(index, "measurement", e.target.value)}
                                                 className="w-full focus:outline-none"
                                             />
                                         </td>

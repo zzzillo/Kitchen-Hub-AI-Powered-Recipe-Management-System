@@ -1,24 +1,48 @@
 import LoginBackground from '../components/LoginBackground'
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import LogoTitle from '../components/LogoTitle';
 import LoginSignupForm from '../components/LoginSignupForm';
 import Message from '../components/Message';
+
 function SignupPage(){
-            
-    const [showSuccess, setShowSuccess] = useState(false);
+    const [showMessage, setShowMessage] = useState(false);
+    const [messageText, setMessageText] = useState("");
+const handleSignup = async (data) => {
+    const username = data.username;
+    const password = data.password;
 
-    const handleSignup = (data) => {
-        const username = data.username;
-        const password = data.password;
-        console.log(`Username: ${username}, Password: ${password}`);
-        setShowSuccess(true);
+    try {
+        const response = await fetch("http://localhost:3001/users/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+        });
+
+        let result;
+        try {
+            result = await response.json();
+        } catch {
+            result = { message: "Invalid response from server" };
+        }
+
+        if (response.ok) {
+            setMessageText(`✅ ${result.message || "Signup successful!"}`);
+        } else {
+            setMessageText(`❌ Signup failed: ${result.message || "Please try again."}`);
+        }
+    } catch (err) {
+        console.error(err);
+        setMessageText("❌ Network error. Please try again later.");
     }
 
-    const handleCloseSuccess = () => {
-        setShowSuccess(false);
-    }
+    setShowMessage(true);
+};
 
+
+    const handleCloseMessage = () => {
+        setShowMessage(false);
+    };
 
     return (
         <div className=' w-screen flex items-center justify-center'>
@@ -38,7 +62,7 @@ function SignupPage(){
                 </div>
             </div>
             <div className='absolute z-1 top-50'>
-                {showSuccess && (<Message message="Signup successful!" onClose={handleCloseSuccess}/>)}
+                {showMessage && (<Message message={messageText} onClose={handleCloseMessage}/>)}
             </div>
         </div>  
     )

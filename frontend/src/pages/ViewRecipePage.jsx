@@ -1,62 +1,98 @@
 import LogoTitle from "@/components/LogoTitle";
 import ViewRecipe from "@/components/ViewRecipe";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function ViewRecipePage() {
-    // Example recipe data (you can fetch this from API, database, or route params)
-    const { id } = useParams();
-    const navigate = useNavigate();
-        const recipeData = {
-        image: "/sample-recipe.jpg",
-        recipeName: "Pork Adobo",
-        description: "A delicious Filipino dish made with soy sauce, vinegar, and pork.",
-        time: "45 mins",
-        category: "Main Dish",
-        tags: ["Filipino", "Savory"],
-        instructions: "1. Marinate pork...\n2. Simmer until tender...",
-        notes: "Best served with rice!",
-        ingredients: [
-            { name: "Pork belly", quantity: "500", measurement: "g", notes: "" },
-            { name: "Soy sauce", quantity: "1/2", measurement: "cup", notes: "" },
-            { name: "Vinegar", quantity: "1/3", measurement: "cup", notes: "" },
-            { name: "Garlic", quantity: "4", measurement: "cloves", notes: "crushed" },
-            { name: "Bay leaves", quantity: "2", measurement: "", notes: "" }
-        ]
+  const { id } = useParams(); // /recipe/:id
+  const navigate = useNavigate();
+  const [recipeData, setRecipeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errMsg, setErrMsg] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/"); // not logged in
+      return;
+    }
+
+    const fetchRecipe = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/recipes/${id}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // ✅ include JWT
+          },
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          navigate("/");
+          return;
+        }
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to fetch recipe");
+        }
+
+        const data = await res.json();
+        const normalizedData = {
+          ...data,
+          tags: Array.isArray(data.tags)
+            ? data.tags
+            : typeof data.tags === "string" && data.tags.trim() !== ""
+              ? data.tags.split(",").map(t => t.trim())
+              : [],
+          ingredients: Array.isArray(data.ingredients)
+            ? data.ingredients
+            : [],
         };
 
-    const editRecipe = () => {
-    navigate(`/updaterecipe/${id}`, { state: { recipeData } });
+      setRecipeData(normalizedData);
+      } catch (e) {
+        setErrMsg(e.message || "Unable to load recipe");
+      } finally {
+        setLoading(false);
+      }
     };
 
+    fetchRecipe();
+  }, [id, navigate]);
 
-    return (
-        <div className="bg-semiwhite">
-            {/* Header */}
-            <div className="w-full flex flex-row items-center justify-between gap-2 sm:gap-3 lg:gap-4">
-                <div className="shrink-0">
-                    <LogoTitle hideTextOnSmall backHomepage />
-                </div>
-                <div className="h-full flex items-center mr-5 sm:mr-7 lg:mr-10">
-                    <button onClick={editRecipe}
-                        className="h-12 w-15 sm:w-30 lg:w-50 text-md lg:text-lg bg-green text-white font-light rounded-sm 
-                                hover:bg-green-800 hover:scale-105 
-                                active:bg-green-900 active:scale-95 
-                                focus:outline-none focus:ring-2 focus:outline-0 
-                                shadow-none transition-all duration-200"
-                    >
-                        <span className="sm:hidden">Edit</span>
-                        <span className="hidden sm:inline">Edit Recipe</span>
-                    </button>
-                </div>
-            </div>
+  const editRecipe = () => {
+    navigate(`/updaterecipe/${id}`, { state: { recipeData } });
+  };
 
-            {/* ViewRecipe with data passed */}
-            <div className="p-4">
-                <ViewRecipe data={recipeData} />
-            </div>
+  if (loading) return <div className="p-6">Loading...</div>;
+  if (errMsg) return <div className="p-6 text-red-600">Error: {errMsg}</div>;
+
+  return (
+    <div className="bg-semiwhite min-h-screen">
+      <div className="w-full flex flex-row items-center justify-between gap-2 sm:gap-3 lg:gap-4">
+        <div className="shrink-0">
+          <LogoTitle hideTextOnSmall backHomepage />
         </div>
-    );
+        <div className="h-full flex items-center mr-5 sm:mr-7 lg:mr-10">
+          <button
+            onClick={editRecipe}
+            className="h-12 px-5 text-md lg:text-lg bg-green text-white font-light rounded-sm 
+                      hover:bg-green-800 hover:scale-105 
+                      active:bg-green-900 active:scale-95 
+                      focus:outline-none focus:ring-2 focus:outline-0 
+                      shadow-none transition-all duration-200"
+          >
+            <span className="sm:hidden">Edit</span>
+            <span className="hidden sm:inline">Edit Recipe</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="p-4">
+        <ViewRecipe data={recipeData} />
+      </div>
+    </div>
+  );
 }
 
 export default ViewRecipePage;
