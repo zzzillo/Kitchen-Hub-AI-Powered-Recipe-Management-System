@@ -6,7 +6,7 @@ import DeleteButton from '@/assets/trash_icon.svg'
 import { useNavigate } from "react-router-dom";
 import RecipeAssistant from "@/components/RecipeAssistant";
 
-function InputRecipe ({ initialData = null, onSave}) {
+function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
     // ----- States -----
     const navigate = useNavigate();
     const [showAssistant, setShowAssistant] = useState(false);
@@ -108,14 +108,29 @@ function InputRecipe ({ initialData = null, onSave}) {
                 <div className="shrink-0">
                 <LogoTitle hideTextOnSmall backHomepage />
                 </div>
-                <div className="h-full flex items-center mr-5 sm:mr-7 lg:mr-10">
-                <RecipeAssistantButton onOpen={() => setShowAssistant(true)} />
-                </div>
+                {allowAssistant && (
+                    <div className="h-full flex items-center mr-5 sm:mr-7 lg:mr-10">
+                        <RecipeAssistantButton onOpen={() => setShowAssistant(true)} />
+                    </div>
+                )}
             </div>
 
             {/* Show modal when button clicked */}
             {showAssistant && (
-                <RecipeAssistant onClose={() => setShowAssistant(false)} />
+            <RecipeAssistant 
+                onClose={() => setShowAssistant(false)}
+                onSubmit={(generatedData) => {
+                // Fill InputRecipe fields with AI-generated data
+                setRecipeName(generatedData.recipeName);
+                setDescription(generatedData.description);
+                setTime(generatedData.time);
+                setCategory(generatedData.category);
+                setTags(generatedData.tags || []);
+                setInstructions(generatedData.instructions);
+                setNotes(generatedData.notes);
+                setRows(generatedData.ingredients?.length ? [...generatedData.ingredients, { name: "", quantity: "", notes: "" }] : [{ name: "", quantity: "", notes: "" }]);
+                }}
+            />
             )}
 
             {/* Image + Info */}

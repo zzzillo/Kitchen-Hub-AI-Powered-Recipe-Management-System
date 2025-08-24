@@ -53,7 +53,7 @@ const updateRecipe = async (data) => {
 
     return (
         <div className="relative">
-            <InputRecipe initialData={recipeData} onSave={updateRecipe} />
+            <InputRecipe initialData={recipeData} onSave={updateRecipe} allowAssistant={false}/>
             
             {popupMessage && (
                 <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black/30">
