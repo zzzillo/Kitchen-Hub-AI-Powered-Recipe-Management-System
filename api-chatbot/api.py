@@ -4,11 +4,19 @@ from dotenv import load_dotenv
 import json
 import re
 import os
+import logging
 from langchain_community.tools import DuckDuckGoSearchResults
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from fastapi.middleware.cors import CORSMiddleware
+
+# --- Logging setup ---
+logging.basicConfig(
+    level=logging.INFO,  # change to DEBUG for more detailed logs
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # --- CONFIG ---
 load_dotenv(dotenv_path="../.env") 
@@ -25,7 +33,7 @@ llm = ChatOpenAI(
     api_key=LMSTUDIO_API_KEY,
     model=MODEL_NAME,
     temperature=0,
-    max_tokens=9000,
+    max_tokens=10000,
     max_retries=2
 )
 
@@ -127,6 +135,7 @@ def safe_parse_json(text: str):
         try:
             data = json.loads(candidate)
         except Exception:
+            logger.error("Failed to parse JSON, returning defaults")
             return defaults
         for k, v in defaults.items():
             if k not in data or data[k] is None:
@@ -154,7 +163,8 @@ def safe_parse_json(text: str):
         if not isinstance(data.get("description"), str):
             data["description"] = str(data["description"]) if data.get("description") is not None else "(missing)"
         return data
-    except Exception:
+    except Exception as e:
+        logger.error(f"Exception in safe_parse_json: {e}", exc_info=True)
         return defaults
 
 
@@ -169,10 +179,10 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,          # specify allowed origins
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],            # allow all HTTP methods
-    allow_headers=["*"],            # allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -185,33 +195,44 @@ class RecipeResponse(BaseModel):
 @app.post("/extract_recipe", response_model=RecipeResponse)
 async def extract_recipe(req: RecipeRequest):
     query = req.query
+    logger.info(f"Received query: {query}")
 
     # Step 1: Search
     search = DuckDuckGoSearchResults(output_format="list")
     results = search.invoke(query + " recipe english")
     urls = [item.get("link") for item in results if "link" in item]
+    logger.info(f"Search returned {len(urls)} URLs: {urls[:TOP_K_PAGES]}")
 
     # Step 2: Extract recipes
     extracted_recipes = []
     for url in urls[:TOP_K_PAGES]:
         try:
+            logger.info(f"Loading page: {url}")
             loader = WebBaseLoader(url)
             page_docs = loader.load()
             page_text = "\n\n".join([doc.page_content for doc in page_docs])[:MAX_CONTEXT_CHARS]
+            logger.debug(f"Page text snippet: {page_text[:300]}")
+
             extracted_raw = extract_chain.invoke({"page_text": page_text}).content.strip()
+            logger.info(f"Extracted raw JSON from {url}: {extracted_raw[:200]}...")
             extracted_recipes.append(extracted_raw)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Error extracting from {url}: {e}", exc_info=True)
             continue
 
     # Step 3: Combine recipes (can be empty)
+    logger.info(f"Combining {len(extracted_recipes)} extracted recipes")
     combined_context = "\n\n---\n\n".join(extracted_recipes) if extracted_recipes else "[]"
 
     # Step 4: Synthesize final recipe
+    logger.info("Synthesizing final recipe")
     final_raw = synthesize_chain.invoke({
         "extracted_blocks": combined_context,
         "recipe_name": query
     }).content.strip()
+    logger.debug(f"Final raw LLM output: {final_raw[:500]}")
 
     recipe_dict = safe_parse_json(final_raw)
+    logger.info(f"Final parsed recipe: {json.dumps(recipe_dict, indent=2)[:500]}")
 
     return RecipeResponse(json=recipe_dict)
