@@ -1,13 +1,21 @@
 import InputRecipe from "@/components/InputRecipe";
 import Message from "@/components/Message";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function CreateRecipepage() {
     const navigate = useNavigate();
     const storedUser = localStorage.getItem("user"); 
+    const token = localStorage.getItem("token"); 
     const [message, setMessage] = useState(null); 
     const [redirectAfterClose, setRedirectAfterClose] = useState(false);
+
+    useEffect (() => {
+            if (!storedUser || !token) {
+            navigate("/");
+            return;
+        }
+    },[])
 
     const createRecipe = async (data) => {
         const formData = new FormData();
@@ -33,8 +41,7 @@ function CreateRecipepage() {
         const response = await fetch("http://localhost:3001/recipes/add", {
             method: "POST",
             headers: {
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-            // ❌ don’t set Content-Type, fetch will do it automatically for FormData
+            "Authorization": `Bearer ${token}`,
             },
             body: formData,
         });

@@ -6,13 +6,14 @@ import { useEffect, useState } from "react";
 function ViewRecipePage() {
   const { id } = useParams(); // /recipe/:id
   const navigate = useNavigate();
+  const storedUser = localStorage.getItem("user"); 
+  const token = localStorage.getItem("token"); 
   const [recipeData, setRecipeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!storedUser || !token) {
       navigate("/"); // not logged in
       return;
     }

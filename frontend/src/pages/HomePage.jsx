@@ -10,6 +10,7 @@ function HomePage() {
     const [search, setSearch] = useState("");
     const [recipes, setRecipes] = useState([]);
     const [user, setUser] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     // Fetch current user from localStorage (set at login)
     useEffect(() => {
@@ -24,7 +25,7 @@ function HomePage() {
         fetchRecipes(storedUser, token);
     }, [navigate]);
 
-const handleRecipeDeleted = async (deletedId) => {
+  const handleRecipeDeleted = async (deletedId) => {
     // Optimistically remove recipe from state
     setRecipes((prev) => prev.filter((recipe) => recipe._id !== deletedId));
 
@@ -49,7 +50,7 @@ const handleRecipeDeleted = async (deletedId) => {
         // Optionally, re-add the recipe to state if error
         // await fetchRecipes(user._id, token);
     }
-};
+  };
 
 
     // Fetch all recipes for the user
@@ -90,44 +91,50 @@ const fetchRecipes = async (userId, token) => {
 
     // Search handler
 // Search handler
-const searchRecipe = async (searchData) => {
-  const searchValue = searchData.search;
-  setSearch(searchValue);
+  const searchRecipe = async (searchData) => {
+    const searchValue = searchData.search;
+    setSearch(searchValue);
 
-  const token = localStorage.getItem("token");
-  if (!user || !token) return;
+    const token = localStorage.getItem("token");
+    if (!user || !token) return;
 
-  try {
-    const response = await fetch(
-      `http://localhost:3001/recipes/search?userId=${user}&query=${encodeURIComponent(searchValue)}`,
-      {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      }
-    );
+    try {
+      const response = await fetch(
+        `http://localhost:3001/recipes/search?userId=${user}&query=${encodeURIComponent(searchValue)}`,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
 
-    if (!response.ok) throw new Error("Failed to search recipes");
+      if (!response.ok) throw new Error("Failed to search recipes");
 
-    const data = await response.json();
+      const data = await response.json();
 
-    // Normalize tags and ingredients
-    const normalizedData = data.map(recipe => ({
-      ...recipe,
-      tags: Array.isArray(recipe.tags)
-        ? recipe.tags
-        : typeof recipe.tags === "string" && recipe.tags.trim() !== ""
-          ? recipe.tags.split(",").map(t => t.trim())
+      // Normalize tags and ingredients
+      const normalizedData = data.map(recipe => ({
+        ...recipe,
+        tags: Array.isArray(recipe.tags)
+          ? recipe.tags
+          : typeof recipe.tags === "string" && recipe.tags.trim() !== ""
+            ? recipe.tags.split(",").map(t => t.trim())
+            : [],
+        ingredients: Array.isArray(recipe.ingredients)
+          ? recipe.ingredients
           : [],
-      ingredients: Array.isArray(recipe.ingredients)
-        ? recipe.ingredients
-        : [],
-    }));
+      }));
 
-    setRecipes(normalizedData);
-  } catch (err) {
-    console.error(err);
-  }
+      setRecipes(normalizedData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+    const handleLogout = () => {
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  navigate('/');
 };
 
 
@@ -140,9 +147,29 @@ const searchRecipe = async (searchData) => {
                 <div className='flex-1 flex items-center justify-center shrink-1'>
                     <SearchBar onSubmit={searchRecipe} />
                 </div>
-                <div className='flex items-center justify-center mr-5 sm:mr-7 lg:mr-10 shrink-0'>
+                <div className='flex items-center justify-center shrink-0'>
                     <AddRecipeButton addRecipe={createRecipe} />
                 </div>
+                <div className="flex items-center justify-center mr-3 sm:mr-4 lg:mr-5 shrink-0">
+                  <button
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="text-xl px-2"
+                  >
+                    ⋮
+                  </button>
+
+                  {menuOpen && (
+                    <div className="absolute right-10 mt-1 w-24 top-15 bg-white border rounded-lg shadow-lg z-10">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-gray-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+                
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full p-5 sm:p-7 lg:p-10'>
                 {recipes

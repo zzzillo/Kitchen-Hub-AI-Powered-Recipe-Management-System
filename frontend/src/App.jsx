@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import CreateRecipePage from './pages/CreateRecipePage';
 import UpdateRecipePage from './pages/UpdateRecipePage';
 import ViewRecipePage from './pages/ViewRecipePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
 return (
@@ -17,6 +18,7 @@ return (
       <Route path='/createrecipe' element={<CreateRecipePage />}/>
       <Route path='/updaterecipe/:id' element={<UpdateRecipePage />}/>
       <Route path='/recipe/:id' element={<ViewRecipePage />}/>
+      <Route path='*' element={<NotFoundPage />} />
     </Routes>
   </Router>
 )

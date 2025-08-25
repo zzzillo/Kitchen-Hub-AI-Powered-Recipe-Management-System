@@ -25,8 +25,16 @@ function RecipeAssistant({ onClose, onSubmit }) {
       image: null
     };
 
+    const res = await fetch(`http://localhost:3001/recipes/${id}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`, // ✅ include JWT
+      },
+    }
+  );
+
     // Call parent handler with generated data
-    if (onSubmit) onSubmit(aiRecipeData);
+  if (onSubmit) onSubmit(aiRecipeData);
 
     setLoading(false);
     onClose(); // close modal

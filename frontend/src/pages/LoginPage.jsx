@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import LoginBackground from '../components/LoginBackground';
 import LogoTitle from '../components/LogoTitle';
 import LoginSignupForm from '../components/LoginSignupForm';
@@ -10,6 +10,15 @@ function LoginPage() {
     const [showMessage, setShowMessage] = useState(false);
     const [messageText, setMessageText] = useState("");
     const [loginSuccess, setLoginSuccess] = useState(false); // track success or failure
+    const storedUser = localStorage.getItem("user"); 
+    const token = localStorage.getItem("token"); 
+
+    useEffect (() => {
+            if (storedUser && token) {
+            navigate("/home");
+            return;
+        }
+    },[])
 
     const handleLogin = async (data) => {
         const username = data.username;

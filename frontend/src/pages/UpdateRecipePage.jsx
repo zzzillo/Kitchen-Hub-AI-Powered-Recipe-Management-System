@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InputRecipe from "@/components/InputRecipe";
 import { useLocation, useNavigate } from "react-router-dom";
 import Message from "@/components/Message";
@@ -6,9 +6,18 @@ import Message from "@/components/Message";
 function UpdateRecipePage() {
     const location = useLocation();
     const navigate = useNavigate();
+    const storedUser = localStorage.getItem("user"); 
+    const token = localStorage.getItem("token"); 
     const recipeData = location.state?.recipeData || null;
 
     const [popupMessage, setPopupMessage] = useState(null);
+
+    useEffect (() => {
+            if (!storedUser || !token) {
+            navigate("/");
+            return;
+        }
+    },[])
 
 const updateRecipe = async (data) => {
     try {
@@ -29,7 +38,7 @@ const updateRecipe = async (data) => {
         const res = await fetch(`http://localhost:3001/recipes/edit/${recipeData._id}`, {
             method: "PUT",
             headers: {
-                "Authorization": `Bearer ${localStorage.getItem("token")}`
+                "Authorization": `Bearer ${token}`
             },
             body: formData
         });
