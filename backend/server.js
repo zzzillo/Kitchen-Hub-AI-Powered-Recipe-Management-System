@@ -1,4 +1,4 @@
-require("dotenv").config(); // Load .env variables
+require("dotenv").config({ path: "../.env" }); // relative to backend folder
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
@@ -9,12 +9,13 @@ const recipeRoutes = require("./routes/recipes");
 const app = express();
 const PORT = process.env.PORT;
 const JWT_SECRET = process.env.JWT_SECRET; // keep this in .env
+const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 connectDB();
 
 // Middleware
 app.use(cors({
-    origin: "http://localhost:5173", // your frontend
+    origin: frontendURL, // your frontend
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 })); // Allow frontend requests

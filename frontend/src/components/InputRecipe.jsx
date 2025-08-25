@@ -129,6 +129,10 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                 setInstructions(generatedData.instructions);
                 setNotes(generatedData.notes);
                 setRows(generatedData.ingredients?.length ? [...generatedData.ingredients, { name: "", quantity: ""}] : [{ name: "", quantity: ""}]);
+                console.log(generatedData);
+                console.log(generatedData.category);
+                console.log(category);
+
                 }}
             />
             )}
@@ -166,7 +170,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                             className='w-full h-50 text-black text-lg mt-5 p-2 resize-none focus:outline-none focus:ring-0 focus:border-transparent scrollbar-hide'
                         />
                     </div>
-                    <div className='flex items-center gap-1 justify-end pb-4'>
+                    <div className='flex items-center gap-1 justify-end pb-4 pr-6'>
                         <img src={TimeIcon} alt='Search Icon' className='h-6 w-6 rounded-full'/>
                         <input
                             placeholder='Time'
@@ -179,7 +183,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                     {/* Tags */}
                     <div className="flex flex-row px-3 pt-3 overflow-x-auto gap-2 scrollbar-hide">
                         <div className="flex items-center rounded-sm bg-green-900 h-8 px-3">
-                            <input type="text" placeholder="Category" onChange={(e) => setCategory(e.target.value)} className="text-sm text-white bg-transparent font-bold min-w-16 field-sizing-content focus:outline-none focus:ring-0 focus:border-transparent"/>
+                            <input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} className="text-sm text-white bg-transparent font-bold min-w-16 field-sizing-content focus:outline-none focus:ring-0 focus:border-transparent"/>
                         </div>
                         <div className='flex items-center rounded-sm bg-green h-8 px-3'>
                             <input
@@ -225,7 +229,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                             <tbody>
                                 {rows.map((row, index) => (
                                     <tr key={index} className="hover:bg-green-50">
-                                        <td className="w-2/5 border-b border-green px-2 py-1">
+                                        <td className="w-3/5 border-b border-green px-2 py-1">
                                             <input
                                                 type="text"
                                                 value={row.name}
@@ -233,7 +237,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                                                 className="w-full focus:outline-none"
                                             />
                                         </td>
-                                        <td className="w-2/5 border-b border-green px-2 py-1">
+                                        <td className="w-3/10 border-b border-green px-2 py-1">
                                             <input
                                                 type="text"
                                                 value={row.quantity}
@@ -241,7 +245,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                                                 className="w-full focus:outline-none"
                                             />
                                         </td>
-                                        <td className="w-1/5 border-b border-green px-2 py-1 text-center">
+                                        <td className="w-1/10 border-b border-green px-2 py-1 text-center">
                                             {Object.values(row).some((v) => v !== "") && (
                                                 <button onClick={() => handleDelete(index)}>
                                                     <img className="w-5 h-4" src={DeleteButton} alt="delete ingredients"/>

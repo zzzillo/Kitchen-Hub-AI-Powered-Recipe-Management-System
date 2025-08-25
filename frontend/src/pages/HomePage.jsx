@@ -5,6 +5,8 @@ import RecipeCard from '../components/RecipeCard';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 function HomePage() {
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
@@ -31,7 +33,7 @@ function HomePage() {
 
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:3001/recipes/delete/${deletedId}`, {
+        const response = await fetch(`${backendUrl}/recipes/delete/${deletedId}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -56,7 +58,7 @@ function HomePage() {
     // Fetch all recipes for the user
 const fetchRecipes = async (userId, token) => {
   try {
-    const response = await fetch(`http://localhost:3001/recipes/user/${userId}`, {
+    const response = await fetch(`${backendUrl}/recipes/user/${userId}`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -100,7 +102,7 @@ const fetchRecipes = async (userId, token) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/recipes/search?userId=${user}&query=${encodeURIComponent(searchValue)}`,
+        `${backendUrl}/recipes/search?userId=${user}&query=${encodeURIComponent(searchValue)}`,
         {
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -182,7 +184,7 @@ const fetchRecipes = async (userId, token) => {
                     index={index}
                     id={String(recipe._id)}
                     key={recipe._id}
-                    src={recipe.image ? `http://localhost:3001/uploads/${recipe.image}` : "/placeholder.png"}
+                    src={recipe.image ? `${backendUrl}/uploads/${recipe.image}` : "/placeholder.png"}
                     title={recipe.recipeName || "Untitled Recipe"}
                     desc={recipe.description || "No description available"}
                     time={recipe.time || "N/A"}

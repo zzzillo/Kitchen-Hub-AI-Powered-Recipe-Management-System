@@ -33,19 +33,22 @@ function ViewRecipe({ data }) {
           )}
         </div>
         <div className="w-1/2 h-full border-y-2 border-r-2 bg-white border-green rounded-r-lg overflow-hidden">
-          <div className="px-10 pt-10 pb-6">
-            <h1 className="w-full h-15 text-green text-5xl font-bold">
-              {recipeName || "Untitled Recipe"}
-            </h1>
-            <p className="w-full h-50 text-black text-lg mt-5">{description}</p>
-          </div>
-          <div className="flex items-center gap-1 justify-end pb-4 pr-6">
-            <img src={TimeIcon} alt="Time Icon" className="h-6 w-6 rounded-full" />
-            <p className="text-black text-sm">{time || "N/A"}</p>
-          </div>
+          <div className="h-92 w-full">
+              <div className="px-10 pt-8 h-full flex flex-col">
+              <h1 className="w-full h-30 text-green text-5xl font-bold line-clamp-2 leading-tight">
+                {recipeName || "Untitled Recipe"}
+              </h1>
+              <div className="h-5">
 
-          {/* Tags */}
-          <div className="flex flex-row px-3 pt-3 overflow-x-auto gap-2 scrollbar-hide">
+              </div>
+              <p className="w-full h-57 text-black text-lg whitespace-pre-line overflow-auto scrollbar-hide">{description}</p>
+            </div>
+          </div>
+            <div className="flex items-center gap-1 justify-end pr-6">
+              <img src={TimeIcon} alt="Time Icon" className="h-6 w-6 rounded-full" />
+              <p className="text-black text-sm">{time || "N/A"}</p>
+            </div>
+          <div className="flex flex-row px-3 pt-2 overflow-x-auto gap-2 scrollbar-hide">
             {category && (
               <div className="flex items-center rounded-sm bg-green-900 h-8 px-3">
                 <p className="text-sm text-white font-bold">{category}</p>

@@ -3,6 +3,8 @@ import InputRecipe from "@/components/InputRecipe";
 import { useLocation, useNavigate } from "react-router-dom";
 import Message from "@/components/Message";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 function UpdateRecipePage() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -35,7 +37,7 @@ const updateRecipe = async (data) => {
             formData.append("image", data.image);
         }
 
-        const res = await fetch(`http://localhost:3001/recipes/edit/${recipeData._id}`, {
+        const res = await fetch(`${backendUrl}/recipes/edit/${recipeData._id}`, {
             method: "PUT",
             headers: {
                 "Authorization": `Bearer ${token}`

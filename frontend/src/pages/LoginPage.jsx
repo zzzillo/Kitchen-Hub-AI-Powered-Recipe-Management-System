@@ -5,6 +5,8 @@ import LogoTitle from '../components/LogoTitle';
 import LoginSignupForm from '../components/LoginSignupForm';
 import Message from '../components/Message';
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 function LoginPage() {
     const navigate = useNavigate();
     const [showMessage, setShowMessage] = useState(false);
@@ -25,7 +27,7 @@ function LoginPage() {
         const password = data.password;
 
         try {
-            const response = await fetch("http://localhost:3001/users/login", {
+            const response = await fetch(`${backendUrl}/users/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),

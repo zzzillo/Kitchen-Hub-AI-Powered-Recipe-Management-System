@@ -6,6 +6,8 @@ import LoginSignupForm from '../components/LoginSignupForm';
 import Message from '../components/Message';
 import { useNavigate } from 'react-router-dom';
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 function SignupPage(){
     const [showMessage, setShowMessage] = useState(false);
     const [messageText, setMessageText] = useState("");
@@ -25,7 +27,7 @@ function SignupPage(){
     const password = data.password;
 
     try {
-        const response = await fetch("http://localhost:3001/users/register", {
+        const response = await fetch(`${backendUrl}/users/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password }),

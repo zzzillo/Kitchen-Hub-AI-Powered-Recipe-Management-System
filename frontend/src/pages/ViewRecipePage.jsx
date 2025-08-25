@@ -3,6 +3,8 @@ import ViewRecipe from "@/components/ViewRecipe";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 function ViewRecipePage() {
   const { id } = useParams(); // /recipe/:id
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ function ViewRecipePage() {
 
     const fetchRecipe = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/recipes/${id}`, {
+        const res = await fetch(`${backendUrl}/recipes/${id}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`, // ✅ include JWT

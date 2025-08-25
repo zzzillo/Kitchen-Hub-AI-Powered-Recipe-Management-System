@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Message from "@/components/Message";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function RecipeAssistant({ onClose, onSubmit }) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -13,7 +15,7 @@ function RecipeAssistant({ onClose, onSubmit }) {
     setErrorMessage(null);
 
     try {
-      const response = await fetch("http://localhost:3001/recipes/ai", {
+      const response = await fetch(`${apiUrl}/extract_recipe`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,16 +29,29 @@ function RecipeAssistant({ onClose, onSubmit }) {
 
       const result = await response.json();
 
+      const data = result.json;  // unwrap here
+      console.log(data)
+
       const aiRecipeData = {
-        recipeName: result.recipeName,
-        description: result.description,
-        time: result.time,
-        category: result.category,
-        tags: result.tags,
-        instructions: result.instructions,
-        notes: result.notes,
-        ingredients: result.ingredients,
+        recipeName: data.recipeName || "Untitled Recipe",
+        description: data.description || "",
+        time: data.time || "",
+        category: data.category || "Uncategorized",
+        tags: data.tags || [],
+        instructions: (data.instructions || [])
+          .map((step, idx) => `${idx + 1}. ${step}`)
+          .join("\n"),   // ✅ turn into numbered string
+        notes: data.notes || "",
+        ingredients: (data.ingredients || []).map(ing => ({
+          name: ing.name || "",
+          quantity: ing.quantity || "",
+          preperation: ing.preperation || ""
+        })),
       };
+
+      console.log(aiRecipeData.category)
+
+      console.log(aiRecipeData)
 
       if (onSubmit) onSubmit(aiRecipeData);
       onClose();
@@ -83,6 +98,14 @@ function RecipeAssistant({ onClose, onSubmit }) {
             {loading ? "Generating..." : "Generate Recipe"}
           </button>
         </div>
+        {loading && (
+          <div className="flex justify-center mt-6 space-x-2">
+            <div className="w-4 h-4 bg-green rounded-full animate-bounce"></div>
+            <div className="w-4 h-4 bg-yellow-500 rounded-full animate-bounce [animation-delay:-0.2s]"></div>
+            <div className="w-4 h-4 bg-red-500 rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+            <span className="ml-3 text-gray-600 font-medium">AI is cooking your recipe...</span>
+          </div>
+        )}
       </div>
         {errorMessage && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black/30">
