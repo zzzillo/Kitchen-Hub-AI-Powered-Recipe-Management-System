@@ -14,7 +14,7 @@ function ViewRecipePage() {
 
   useEffect(() => {
     if (!storedUser || !token) {
-      navigate("/"); // not logged in
+      navigate("/");
       return;
     }
 

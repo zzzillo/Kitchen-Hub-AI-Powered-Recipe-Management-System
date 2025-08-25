@@ -63,7 +63,7 @@ function CreateRecipepage() {
     const handleCloseMessage = () => {
         setMessage(null);
         if (redirectAfterClose) {
-            navigate("/home"); // 👈 redirect home after "Okay"
+            navigate("/home");
         }
     };
 

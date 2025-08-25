@@ -15,7 +15,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
     const [inputValue, setInputValue] = useState('');
     const [instructions, setInstructions] = useState('');
     const [notes, setNotes] = useState('');
-    const [rows, setRows] = useState([{ name: "", quantity: "", notes: "" }]);
+    const [rows, setRows] = useState([{ name: "", quantity: ""}]);
     const [recipeName, setRecipeName] = useState('');
     const [description, setDescription] = useState('');
     const [time, setTime] = useState('');
@@ -34,7 +34,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
             setTags(initialData.tags || []);
             setInstructions(initialData.instructions || '');
             setNotes(initialData.notes || '');
-            setRows(initialData.ingredients?.length ? [...initialData.ingredients, { name: "", quantity: "", notes: "" }] : [{ name: "", quantity: "", notes: "" }]);
+            setRows(initialData.ingredients?.length ? [...initialData.ingredients, { name: "", quantity: ""}] : [{ name: "", quantity: ""}]);
             setRecipeName(initialData.recipeName || '');
             setDescription(initialData.description || '');
             setTime(initialData.time || '');
@@ -128,7 +128,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                 setTags(generatedData.tags || []);
                 setInstructions(generatedData.instructions);
                 setNotes(generatedData.notes);
-                setRows(generatedData.ingredients?.length ? [...generatedData.ingredients, { name: "", quantity: "", notes: "" }] : [{ name: "", quantity: "", notes: "" }]);
+                setRows(generatedData.ingredients?.length ? [...generatedData.ingredients, { name: "", quantity: ""}] : [{ name: "", quantity: ""}]);
                 }}
             />
             )}
@@ -219,14 +219,13 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                                 <tr className="bg-green">
                                     <th className="px-2 py-1 text-white">Name</th>
                                     <th className="px-2 py-1 text-white">Quantity</th>
-                                    <th className="px-2 py-1 text-white">Notes</th>
                                     <th className="px-2 py-1 text-white">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {rows.map((row, index) => (
                                     <tr key={index} className="hover:bg-green-50">
-                                        <td className="w-1/3 border-b border-green px-2 py-1">
+                                        <td className="w-2/5 border-b border-green px-2 py-1">
                                             <input
                                                 type="text"
                                                 value={row.name}
@@ -234,19 +233,11 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                                                 className="w-full focus:outline-none"
                                             />
                                         </td>
-                                        <td className="w-1/5 border-b border-green px-2 py-1">
+                                        <td className="w-2/5 border-b border-green px-2 py-1">
                                             <input
                                                 type="text"
                                                 value={row.quantity}
                                                 onChange={(e) => handleChange(index, "quantity", e.target.value)}
-                                                className="w-full focus:outline-none"
-                                            />
-                                        </td>
-                                        <td className="w-1/4 border-b border-r border-green px-2 py-1">
-                                            <input
-                                                type="text"
-                                                value={row.notes}
-                                                onChange={(e) => handleChange(index, "notes", e.target.value)}
                                                 className="w-full focus:outline-none"
                                             />
                                         </td>

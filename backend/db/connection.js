@@ -19,16 +19,16 @@ async function connectDB() {
     await client.connect();
     db = client.db("KitchenHub"); // 👈 replace "myapp" with your database name
     await db.command({ ping: 1 });
-    console.log("✅ Connected to MongoDB Atlas!");
+    console.log("Connected to MongoDB Atlas!");
   } catch (err) {
-    console.error("❌ MongoDB connection error:", err);
+    console.error("MongoDB connection error:", err);
     process.exit(1);
   }
 }
 
 function getDB() {
   if (!db) {
-    throw new Error("❌ Database not initialized. Call connectDB first.");
+    throw new Error("Database not initialized. Call connectDB first.");
   }
   return db;
 }

@@ -69,18 +69,14 @@ function ViewRecipe({ data }) {
               <tr className="bg-green">
                 <th className="px-2 py-1 text-white">Name</th>
                 <th className="px-2 py-1 text-white">Quantity</th>
-                <th className="px-2 py-1 text-white">Measurement</th>
-                <th className="px-2 py-1 text-white">Notes</th>
               </tr>
             </thead>
             <tbody>
               {ingredients.length > 0 ? (
                 ingredients.map((row, index) => (
                   <tr key={index} className="hover:bg-green-50">
-                    <td className="w-1/3 border-b border-green px-2 py-1">{row.name}</td>
-                    <td className="w-1/5 border-b border-green px-2 py-1">{row.quantity}</td>
-                    <td className="w-1/5 border-b border-green px-2 py-1">{row.measurement}</td>
-                    <td className="w-1/4 border-b border-green px-2 py-1">{row.notes}</td>
+                    <td className="w-1/2 border-b border-green px-2 py-1">{row.name}</td>
+                    <td className="w-1/2 border-b border-green px-2 py-1">{row.quantity}</td>
                   </tr>
                 ))
               ) : (

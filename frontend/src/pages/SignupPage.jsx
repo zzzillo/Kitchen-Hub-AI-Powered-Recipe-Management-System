@@ -1,14 +1,26 @@
 import LoginBackground from '../components/LoginBackground'
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import LogoTitle from '../components/LogoTitle';
 import LoginSignupForm from '../components/LoginSignupForm';
 import Message from '../components/Message';
+import { useNavigate } from 'react-router-dom';
 
 function SignupPage(){
     const [showMessage, setShowMessage] = useState(false);
     const [messageText, setMessageText] = useState("");
-const handleSignup = async (data) => {
+    const storedUser = localStorage.getItem("user"); 
+    const token = localStorage.getItem("token"); 
+    const navigate = useNavigate();
+
+    useEffect (() => {
+            if (storedUser && token) {
+            navigate("/home");
+            return;
+        }
+    },[])
+
+    const handleSignup = async (data) => {
     const username = data.username;
     const password = data.password;
 
@@ -27,13 +39,13 @@ const handleSignup = async (data) => {
         }
 
         if (response.ok) {
-            setMessageText(`✅ ${result.message || "Signup successful!"}`);
+            setMessageText(`${result.message || "Signup successful!"}`);
         } else {
-            setMessageText(`❌ Signup failed: ${result.message || "Please try again."}`);
+            setMessageText(`Signup failed: ${result.message || "Please try again."}`);
         }
     } catch (err) {
         console.error(err);
-        setMessageText("❌ Network error. Please try again later.");
+        setMessageText(" Network error. Please try again later.");
     }
 
     setShowMessage(true);

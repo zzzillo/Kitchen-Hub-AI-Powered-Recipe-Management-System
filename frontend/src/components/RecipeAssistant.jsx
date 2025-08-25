@@ -1,56 +1,65 @@
 import { useState } from "react";
+import Message from "@/components/Message";
 
 function RecipeAssistant({ onClose, onSubmit }) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
     setLoading(true);
+    setErrorMessage(null);
 
-    // Placeholder for future API call
-    const aiRecipeData = {
-      recipeName: "AI Generated Recipe",
-      description: "Generated description based on: " + prompt,
-      time: "30 mins",
-      category: "Generated",
-      tags: ["AI", "Generated"],
-      instructions: "Step 1: ... Step 2: ...",
-      notes: "",
-      ingredients: [
-        { name: "Ingredient 1", quantity: "1 cup", notes: "" },
-        { name: "Ingredient 2", quantity: "2 tsp", notes: "" }
-      ],
-      image: null
-    };
+    try {
+      const response = await fetch("http://localhost:3001/recipes/ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query:prompt }),
+      });
 
-    const res = await fetch(`http://localhost:3001/recipes/${id}`, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`, // ✅ include JWT
-      },
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      const aiRecipeData = {
+        recipeName: result.recipeName,
+        description: result.description,
+        time: result.time,
+        category: result.category,
+        tags: result.tags,
+        instructions: result.instructions,
+        notes: result.notes,
+        ingredients: result.ingredients,
+      };
+
+      if (onSubmit) onSubmit(aiRecipeData);
+      onClose();
+    } catch (error) {
+      setErrorMessage(error.message || "Something went wrong while generating the recipe.");
+    } finally {
+      setLoading(false);
     }
-  );
-
-    // Call parent handler with generated data
-  if (onSubmit) onSubmit(aiRecipeData);
-
-    setLoading(false);
-    onClose(); // close modal
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white rounded-2xl shadow-lg w-2/3 max-w-2xl p-6 relative">
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-black"
         >
           ✕
         </button>
 
-        <h2 className="text-2xl font-bold text-center mb-2 text-green">AI Recipe Assistant</h2>
+        <h2 className="text-2xl font-bold text-center mb-2 text-green">
+          AI Recipe Assistant
+        </h2>
         <p className="text-gray-600 text-center mb-4">
           Describe what kind of recipe you want and it will help you generate one!
         </p>
@@ -75,6 +84,11 @@ function RecipeAssistant({ onClose, onSubmit }) {
           </button>
         </div>
       </div>
+        {errorMessage && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black/30">
+          <Message message={errorMessage} onClose={() => setErrorMessage(null)}/>
+        </div>
+      )}
     </div>
   );
 }
