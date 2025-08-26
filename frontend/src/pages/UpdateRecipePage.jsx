@@ -28,7 +28,13 @@ const updateRecipe = async (data) => {
         // Append all recipe fields (except image first)
         for (const key in data) {
             if (key !== "image") {
-                formData.append(key, data[key]);
+                const value = data[key];
+                // Stringify objects/arrays before appending
+                if (typeof value === "object") {
+                    formData.append(key, JSON.stringify(value));
+                } else {
+                    formData.append(key, value);
+                }
             }
         }
 

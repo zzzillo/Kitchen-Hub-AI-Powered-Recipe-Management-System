@@ -30,7 +30,6 @@ function RecipeAssistant({ onClose, onSubmit }) {
       const result = await response.json();
 
       const data = result.json;  // unwrap here
-      console.log(data)
 
       const aiRecipeData = {
         recipeName: data.recipeName || "Untitled Recipe",
@@ -48,10 +47,6 @@ function RecipeAssistant({ onClose, onSubmit }) {
           preperation: ing.preperation || ""
         })),
       };
-
-      console.log(aiRecipeData.category)
-
-      console.log(aiRecipeData)
 
       if (onSubmit) onSubmit(aiRecipeData);
       onClose();

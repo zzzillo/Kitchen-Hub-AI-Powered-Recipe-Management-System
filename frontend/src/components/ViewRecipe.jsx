@@ -70,8 +70,8 @@ function ViewRecipe({ data }) {
           <table className="w-full border-collapse overflow-auto">
             <thead className="sticky top-0">
               <tr className="bg-green">
-                <th className="px-2 py-1 text-white">Name</th>
-                <th className="px-2 py-1 text-white">Quantity</th>
+                <th className="text-left px-2 py-1 text-white">Name</th>
+                <th className="text-left px-2 py-1 text-white">Quantity</th>
               </tr>
             </thead>
             <tbody>

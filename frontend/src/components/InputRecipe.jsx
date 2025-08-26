@@ -27,7 +27,6 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
         if (initialData) {
         // Set preview to stored image (URL or path from backend)
             setImagePreview(initialData.image || '');
-        
             // No new file chosen yet
             setImage(null);
             setImage(initialData.image ? { preview: initialData.image, file: null } : null);
@@ -44,16 +43,24 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
 
     // ----- Ingredient Handlers -----
     const handleChange = (index, field, value) => {
+        // Clone rows
         const newRows = [...rows];
-        newRows[index][field] = value;
+
+        // Clone the specific object before modifying
+        newRows[index] = { ...newRows[index], [field]: value };
+
+        // Update state
         setRows(newRows);
 
-        // If editing last row and has data, add a new blank row
-        if (index === rows.length - 1 && Object.values(newRows[index]).some(v => v !== "")) {
-            newRows.push({ name: "", quantity: "", notes: "" });
-            setRows(newRows);
+        // If editing last row and it has data, add a new blank row
+        if (
+            index === newRows.length - 1 &&
+            Object.values(newRows[index]).some(v => v !== "")
+        ) {
+            setRows([...newRows, { name: "", quantity: "" }]);
         }
     };
+
 
     const handleDelete = (index) => {
         const newRows = [...rows];
@@ -91,9 +98,7 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
             notes,
             ingredients: rows.filter(row => Object.values(row).some(v => v !== "")) // remove last empty row
         };
-
         if (onSave) onSave(dataToSave);
-        console.log("Recipe Saved:", dataToSave); // debug
     };
 
     const onCancel = () => {
@@ -129,10 +134,6 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                 setInstructions(generatedData.instructions);
                 setNotes(generatedData.notes);
                 setRows(generatedData.ingredients?.length ? [...generatedData.ingredients, { name: "", quantity: ""}] : [{ name: "", quantity: ""}]);
-                console.log(generatedData);
-                console.log(generatedData.category);
-                console.log(category);
-
                 }}
             />
             )}
@@ -214,16 +215,15 @@ function InputRecipe ({ initialData = null, onSave, allowAssistant = true}) {
                 </div>
             </div>
 
-            {/* Ingredients + Instructions */}
             <div className="w-full h-120 px-12 py-3 box-border flex flex-row">
                 <div className="h-full w-1/2 border-2 rounded-l-lg border-green bg-white flex flex-col">
                     <div className="flex-1 overflow-auto scrollbar-hide">
                         <table className="w-full border-collapse overflow-auto">
                             <thead className="sticky top-0">
                                 <tr className="bg-green">
-                                    <th className="px-2 py-1 text-white">Name</th>
-                                    <th className="px-2 py-1 text-white">Quantity</th>
-                                    <th className="px-2 py-1 text-white">Delete</th>
+                                    <th className="text-left px-2 py-1 text-white">Name</th>
+                                    <th className="text-left px-2 py-1 text-white">Quantity</th>
+                                    <th className="text-left px-2 py-1 text-white">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>

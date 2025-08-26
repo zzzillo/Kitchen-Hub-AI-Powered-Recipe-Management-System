@@ -28,6 +28,17 @@ const storage = multer.diskStorage({
   },
 });
 
+function safeParseArray(field) {
+  if (!field) return [];
+  if (Array.isArray(field)) return field; // already array
+  try {
+    const parsed = JSON.parse(field);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [field]; // fallback: wrap as single string
+  }
+}
+
 const upload = multer({ storage });
 
 // Create a recipe
@@ -37,14 +48,13 @@ router.post("/add", upload.single("image"), async (req, res) => {
 
     const db = getDB();
     const collection = db.collection("recipes");
-
     const recipe = {
       userId,
       recipeName,
       description,
       image: req.file ? req.file.filename : null, // store filename
       time,
-      tags: tags ? JSON.parse(tags) : [], // if frontend sends JSON.stringify
+      tags: tags,//make the tags to be saved as "tag1, tag2" in the frontend it is stringified
       instructions: instructions || "",
       notes: notes || "",
       ingredients: ingredients ? JSON.parse(ingredients) : [], // parse array
@@ -102,13 +112,31 @@ router.put("/edit/:id", upload.single("image"), async (req, res) => {
 
     // find existing recipe
     const recipe = await collection.findOne({ _id: new ObjectId(recipeId) });
-    if (!recipe) return res.status(404).json({ success: false, error: "Recipe not found" });
+    if (!recipe) {
+      return res.status(404).json({ success: false, error: "Recipe not found" });
+    }
 
     const updates = { ...req.body, updatedAt: new Date() };
 
-    // handle image update
+    // ✅ Parse JSON fields if they exist
+    if (updates.ingredients && typeof updates.ingredients === "string") {
+      try {
+        updates.ingredients = JSON.parse(updates.ingredients);
+      } catch (e) {
+        console.error("Invalid JSON for ingredients:", e);
+      }
+    }
+
+    if (updates.tags && typeof updates.tags === "string") {
+      try {
+        updates.tags = JSON.parse(updates.tags);
+      } catch (e) {
+        console.error("Invalid JSON for tags:", e);
+      }
+    }
+
+    // ✅ handle image update
     if (req.file) {
-      // delete old image if exists
       if (recipe.image) {
         const oldPath = path.join("uploads", recipe.image);
         if (fs.existsSync(oldPath)) {

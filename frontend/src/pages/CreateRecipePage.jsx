@@ -35,9 +35,8 @@ function CreateRecipepage() {
         }
 
         // stringify arrays/objects
-        formData.append("tags", JSON.stringify(data.tags));
+        formData.append("tags", data.tags.join(", "));
         formData.append("ingredients", JSON.stringify(data.ingredients));
-
         const response = await fetch("http://localhost:3001/recipes/add", {
             method: "POST",
             headers: {

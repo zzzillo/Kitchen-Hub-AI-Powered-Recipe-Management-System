@@ -32,5 +32,5 @@ app.use("/recipes", recipeRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
