@@ -43,7 +43,7 @@ Think of it as your personal cooking companion, whether you want to store grandm
 Kitchen Hub is built with a mix of frontend, backend, and AI tools:  
 
 - **Frontend:** React + Tailwind CSS  
-- **Backend:** Node.js (main backend)  
+- **Backend:** Node.js + Express 
 - **Database:** MongoDB  
 - **AI Integration:** Python + LangChain  
 - **API Layer:** FastAPI (connects AI to the main app)  
@@ -116,6 +116,7 @@ py -m venv .venv
 .\.venv\Scripts\activate
 
 pip install -r requirements.txt
-uvicorn main:app --reload
+uvicorn api:app --reload --host LMSTUDIO_BASE_URL --port PORT #(uvicorn api:app --reload --host 127.0.0.1 --port 8000)
+
 ```
 
