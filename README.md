@@ -88,9 +88,8 @@ MAX_CONTEXT_CHARS=10000
 MODEL_NAME=meta-llama-3.1-8b-instruct  # or gpt-4o if using OpenAI
 ```
 
-Note:
-
-The LMSTUDIO_BASE_URL and LMSTUDIO_API_KEY variable names are fixed and cannot be changed.
+**Note:**
+The **LMSTUDIO_BASE_URL** and **LMSTUDIO_API_KEY** variable names are fixed and cannot be changed.
 However, you can point them either to LM Studio (local runtime) or to an external provider like OpenAI’s API.
 If you’re using LM Studio locally, the API key can be any random string (LM Studio ignores it).
 If you’re using OpenAI, put your real OpenAI API key in LMSTUDIO_API_KEY and set LMSTUDIO_BASE_URL=https://api.openai.com/v1.
