@@ -77,12 +77,23 @@ PORT=                   # Backend server port number (3001)
 MONGO_URI=              # MongoDB connection string
 JWT_SECRET=             # JWT secret key for authentication
 FRONTEND_URL=           # Frontend application URL (http://localhost:5173)
-LMSTUDIO_BASE_URL=      # LMStudio API base URL (found at top of loaded model interface) (http://127.0.0.1:1234/v1)
-LMSTUDIO_API_KEY=       # LMStudio API key for authentication
+
+LMSTUDIO_BASE_URL=      # Can be LMStudio local URL (http://127.0.0.1:1234/v1) 
+                        # OR an OpenAI/other LLM API endpoint
+LMSTUDIO_API_KEY=       # Required field, but value can be ANYTHING for LMStudio
+                        # (For OpenAI, put your real API key here)
+
 TOP_K_PAGES=3
 MAX_CONTEXT_CHARS=10000
-MODEL_NAME=meta-llama-3.1-8b-instruct  # Model name (update with your chosen model)
+MODEL_NAME=meta-llama-3.1-8b-instruct  # or gpt-4o if using OpenAI
 ```
+
+Note:
+
+The LMSTUDIO_BASE_URL and LMSTUDIO_API_KEY variable names are fixed and cannot be changed.
+However, you can point them either to LM Studio (local runtime) or to an external provider like OpenAI’s API.
+If you’re using LM Studio locally, the API key can be any random string (LM Studio ignores it).
+If you’re using OpenAI, put your real OpenAI API key in LMSTUDIO_API_KEY and set LMSTUDIO_BASE_URL=https://api.openai.com/v1.
 
 #### Frontend .env
 ```bash
