@@ -11,7 +11,6 @@ function UpdateRecipePage() {
     const storedUser = localStorage.getItem("user"); 
     const token = localStorage.getItem("token"); 
     const recipeData = location.state?.recipeData || null;
-
     const [popupMessage, setPopupMessage] = useState(null);
 
     useEffect (() => {
