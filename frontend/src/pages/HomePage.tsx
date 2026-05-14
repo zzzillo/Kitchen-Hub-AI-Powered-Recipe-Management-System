@@ -5,10 +5,11 @@ import RecipeCard from "@/components/RecipeCard";
 import SearchBar from "@/components/SearchBar";
 import { useRecipeList } from "@/hooks/use-recipe-list";
 import { getRecipeImageSrc } from "@/utils/recipe-utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -31,6 +32,22 @@ const HomePage = () => {
     handleRecipeDeleted,
     handlePinToggled,
   } = useRecipeList({ backendUrl });
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    void fetch(`${backendUrl}/health`, {
+      signal: controller.signal,
+    }).catch(() => {});
+
+    void fetch(`${apiUrl}/health`, {
+      signal: controller.signal,
+    }).catch(() => {});
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   const handleLogoutClick = () => {
     setIsUserMenuOpen(false);
