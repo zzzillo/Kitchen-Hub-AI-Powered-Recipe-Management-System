@@ -47,7 +47,7 @@ Kitchen Hub is built with a mix of frontend, backend, and AI tools:
 - **Database:** MongoDB  
 - **AI Integration:** Python + LangChain  
 - **API Layer:** FastAPI (connects AI to the main app)  
-- **LLM Model:** LM Studio (for running the language model locally)  
+- **LLM Model:** LM Studio locally, or Gemini via its OpenAI-compatible API  
 
 ---
 
@@ -78,14 +78,17 @@ MONGO_URI=              # MongoDB connection string
 JWT_SECRET=             # JWT secret key for authentication
 FRONTEND_URL=           # Frontend application URL (http://localhost:5173)
 
-LMSTUDIO_BASE_URL=      # Can be LMStudio local URL (http://127.0.0.1:1234/v1) 
-                        # OR an OpenAI/other LLM API endpoint
+LMSTUDIO_BASE_URL=      # Can be LMStudio local URL (http://127.0.0.1:1234/v1)
+                        # OR any OpenAI-compatible endpoint
 LMSTUDIO_API_KEY=       # Required field, but value can be ANYTHING for LMStudio
-                        # (For OpenAI, put your real API key here)
+                        # (For external providers, put your real API key here)
+
+GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+GEMINI_API_KEY=         # Optional override. If set, the AI service will use Gemini.
 
 TOP_K_PAGES=3
 MAX_CONTEXT_CHARS=10000
-MODEL_NAME=meta-llama-3.1-8b-instruct  # or gpt-4o if using OpenAI
+MODEL_NAME=gemini-2.5-flash  # e.g. gemini-2.5-flash, gpt-4o, or your LM Studio model
 ```
 
 **Note:**
@@ -93,6 +96,7 @@ The **LMSTUDIO_BASE_URL** and **LMSTUDIO_API_KEY** variable names are fixed and 
 However, you can point them either to LM Studio (local runtime) or to an external provider like OpenAI’s API.
 If you’re using LM Studio locally, the API key can be any random string (LM Studio ignores it).
 If you’re using OpenAI, put your real OpenAI API key in LMSTUDIO_API_KEY and set LMSTUDIO_BASE_URL=https://api.openai.com/v1.
+If you’re using Gemini, set `GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/` and `GEMINI_API_KEY` to your Google AI Studio key.
 
 #### Frontend .env
 ```bash
@@ -110,7 +114,7 @@ npm run dev
 
 #### Backend (Node.js)
 ```bash
-cd frontend
+cd backend
 npm install
 node server.js
 ```
@@ -119,16 +123,20 @@ node server.js
 ```bash
 cd api-chatbot
 #MacOS
-python3 -m venv .venv
+python3 -m venv venv
 source venv/bin/activate
 #Windows
-py -m venv .venv
-.\.venv\Scripts\activate
+py -m venv venv
+.\venv\Scripts\activate
 
 pip install -r requirements.txt
-uvicorn api:app --reload --host LMSTUDIO_BASE_URL --port PORT #(uvicorn api:app --reload --host 127.0.0.1 --port 8000)
+uvicorn api:app --reload --host 127.0.0.1 --port 8000
+
+# Gemini example for the root .env
+GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+GEMINI_API_KEY=your_google_ai_studio_key
+MODEL_NAME=gemini-2.5-flash
 
 ```
-
 
 
