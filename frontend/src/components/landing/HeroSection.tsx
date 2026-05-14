@@ -9,16 +9,17 @@ interface HeroSectionProps {
 const HeroSection = ({ isAuthenticated }: HeroSectionProps) => (
   <section className="relative isolate overflow-hidden bg-[#f8faf7]">
     <div
-      className="absolute inset-0 hidden bg-cover bg-left bg-no-repeat md:block lg:bg-[position:center_right]"
+      className="absolute inset-0 bg-cover bg-left-top bg-no-repeat opacity-100 motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-[1.02] motion-safe:duration-700 motion-safe:[animation-timing-function:cubic-bezier(0.16,1,0.3,1)] lg:bg-[position:center_right]"
       style={{
         backgroundImage: `url(${LandingBackground})`,
       }}
     />
+    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(248,250,247,0.08)_0%,rgba(248,250,247,0.12)_48%,rgba(248,250,247,0.2)_100%)] lg:hidden" />
     <div className="mx-auto grid w-full grid-cols-1 px-4 py-6 sm:px-6 lg:min-h-[100dvh] lg:px-8 lg:py-8">
       <div className="flex w-full justify-center py-10 lg:justify-start lg:items-center lg:py-0">
-        <div className="relative z-10 w-full p-4 text-center motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-left-4 motion-safe:duration-700 sm:p-6 lg:p-0 lg:text-left">
+        <div className="relative z-10 w-full p-4 text-center motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:slide-in-from-left-4 motion-safe:duration-700 motion-safe:[animation-timing-function:cubic-bezier(0.16,1,0.3,1)] sm:p-6 lg:p-0 lg:text-left">
           <div className="text-left">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-500 motion-safe:[animation-timing-function:cubic-bezier(0.16,1,0.3,1)]">
               <img
                 src={Logo}
                 alt="Kitchen Hub logo"
@@ -36,27 +37,27 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => (
           </div>
 
           <div className="mt-8 flex flex-col items-center lg:mt-12 lg:block">
-            <h1 className="mx-auto mt-8 max-w-[11ch] text-balance font-serif text-[3.7rem] leading-[0.86] tracking-[-0.085em] text-[#203126] sm:max-w-[10ch] sm:text-[5rem] lg:mx-0 lg:mt-12 lg:max-w-[9ch] lg:text-[6.1rem]">
+            <h1 className="mx-auto mt-8 max-w-[11ch] text-balance font-serif text-[3.25rem] leading-[0.88] tracking-[-0.085em] text-[#203126] motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-700 motion-safe:[animation-timing-function:cubic-bezier(0.16,1,0.3,1)] sm:max-w-[10ch] sm:text-[5rem] lg:mx-0 lg:mt-12 lg:max-w-[9ch] lg:text-[6.1rem]">
               A better way to
               <br />
               keep your recipes.
             </h1>
 
-            <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-[#5b6d5a] sm:max-w-2xl sm:text-lg lg:mx-0 lg:max-w-[26rem]">
+            <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#5b6d5a] motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-700 motion-safe:[animation-timing-function:cubic-bezier(0.16,1,0.3,1)] sm:mt-6 sm:max-w-2xl sm:text-lg sm:leading-8 lg:mx-0 lg:max-w-[26rem]">
               Kitchen Hub gives you one place to save recipes, edit them later,
               search your collection, and build new drafts with AI.
             </p>
 
-            <div className="mt-8 flex flex-wrap justify-center gap-4 lg:justify-start">
+            <div className="mt-7 flex flex-wrap justify-center gap-3 motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-700 motion-safe:[animation-timing-function:cubic-bezier(0.16,1,0.3,1)] sm:mt-8 sm:gap-4 lg:justify-start">
               <Link
                 to={isAuthenticated ? "/recipes" : "/signup"}
-                className="inline-flex h-12 items-center justify-center rounded-full bg-[#539246] px-6 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(35,58,30,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#487f3c] active:translate-y-px sm:text-base"
+                className="inline-flex h-11 items-center justify-center rounded-full bg-[#539246] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(35,58,30,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#487f3c] active:translate-y-px sm:h-12 sm:px-6 sm:text-base"
               >
                 {isAuthenticated ? "Open Kitchen Hub" : "Create your account"}
               </Link>
               <Link
                 to={isAuthenticated ? "/recipes/new" : "/login"}
-                className="inline-flex h-12 items-center justify-center rounded-full border border-[#d7d2c3] bg-white/60 px-6 text-sm font-semibold text-[#315032] transition duration-300 hover:bg-white active:translate-y-px sm:text-base"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-[#d7d2c3] bg-white/70 px-5 text-sm font-semibold text-[#315032] transition duration-300 hover:bg-white active:translate-y-px sm:h-12 sm:px-6 sm:text-base"
               >
                 {isAuthenticated ? "Add recipe" : "Login"}
               </Link>

@@ -160,13 +160,13 @@ const RecipeCard = ({
         </div>
 
         <div className="flex flex-col gap-3 px-4 py-4 sm:px-5">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
             <h1 className="flex-1 font-['Fraunces'] text-3xl font-semibold leading-none tracking-[-0.04em] text-[#284734]">
               {title}
             </h1>
-            <div className="flex items-center gap-1 whitespace-nowrap rounded-full border border-[#d7e1d8] bg-[#eff4ef] px-[0.72rem] py-[0.28rem] text-[#284734]">
+            <div className="flex max-w-full items-start gap-1 self-start rounded-full border border-[#d7e1d8] bg-[#eff4ef] px-[0.72rem] py-[0.28rem] text-[#284734] sm:max-w-[12rem]">
               <img src={TimeIcon} alt="Time Icon" className="h-5 w-5 rounded-full" />
-              <p className="text-sm">{time}</p>
+              <p className="text-sm leading-5 whitespace-normal break-words">{time}</p>
             </div>
           </div>
 

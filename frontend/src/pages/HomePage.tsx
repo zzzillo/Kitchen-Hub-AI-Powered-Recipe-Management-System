@@ -102,13 +102,13 @@ const HomePage = () => {
         </div>
 
         <div className='flex justify-end'>
-          <div className='flex flex-wrap justify-end gap-2'>
-            <label className='inline-flex max-w-full items-center gap-1.5 rounded-[12px] border border-[#d7e1d8] bg-white px-2.5 py-2 text-[0.78rem] text-[#284734] shadow-[0_8px_24px_rgba(32,55,41,0.05)] sm:gap-2 sm:rounded-[14px] sm:px-3 sm:text-sm'>
-              <span className='shrink-0 font-medium'>Category:</span>
+          <div className='flex flex-wrap justify-end gap-1.5 sm:gap-2'>
+            <label className='inline-flex max-w-full items-center gap-1 rounded-[10px] border border-[#d7e1d8] bg-white px-2 py-1.5 text-[0.7rem] text-[#284734] shadow-[0_8px_24px_rgba(32,55,41,0.05)] sm:gap-2 sm:rounded-[14px] sm:px-3 sm:py-2 sm:text-sm'>
+              <span className='hidden shrink-0 font-medium sm:inline'>Category:</span>
               <select
                 value={selectedCategory}
                 onChange={(event) => setSelectedCategory(event.target.value)}
-                className='max-w-[7.5rem] bg-transparent text-[0.78rem] font-medium text-[#284734] outline-none sm:max-w-[10rem] sm:text-sm'
+                className='max-w-[6.25rem] bg-transparent text-[0.7rem] font-medium text-[#284734] outline-none sm:max-w-[10rem] sm:text-sm'
               >
                 <option value="all">All</option>
                 {categoryOptions.map((category) => (
@@ -118,12 +118,12 @@ const HomePage = () => {
                 ))}
               </select>
             </label>
-            <label className='inline-flex max-w-full items-center gap-1.5 rounded-[12px] border border-[#d7e1d8] bg-white px-2.5 py-2 text-[0.78rem] text-[#284734] shadow-[0_8px_24px_rgba(32,55,41,0.05)] sm:gap-2 sm:rounded-[14px] sm:px-3 sm:text-sm'>
-              <span className='shrink-0 font-medium'>Sort:</span>
+            <label className='inline-flex max-w-full items-center gap-1 rounded-[10px] border border-[#d7e1d8] bg-white px-2 py-1.5 text-[0.7rem] text-[#284734] shadow-[0_8px_24px_rgba(32,55,41,0.05)] sm:gap-2 sm:rounded-[14px] sm:px-3 sm:py-2 sm:text-sm'>
+              <span className='hidden shrink-0 font-medium sm:inline'>Sort:</span>
               <select
                 value={sortBy}
                 onChange={(event) => setSortBy(event.target.value as typeof sortBy)}
-                className='max-w-[7rem] bg-transparent text-[0.78rem] font-medium text-[#284734] outline-none sm:max-w-[9rem] sm:text-sm'
+                className='max-w-[5.8rem] bg-transparent text-[0.7rem] font-medium text-[#284734] outline-none sm:max-w-[9rem] sm:text-sm'
               >
                 <option value="time-added">Time added</option>
                 <option value="alphabetical">Alphabetical</option>

@@ -63,3 +63,41 @@ export const getCategoryOptions = (recipes: NormalizedRecipe[]) =>
       value: category,
       label: category.charAt(0).toUpperCase() + category.slice(1),
     }));
+
+const getTitleMatchScore = (recipe: NormalizedRecipe, query: string): number => {
+  const normalizedQuery = query.trim().toLowerCase();
+  if (!normalizedQuery) return 0;
+
+  const title = (recipe.recipeName || "").trim().toLowerCase();
+  if (!title) return 0;
+  if (title === normalizedQuery) return 3;
+  if (title.startsWith(normalizedQuery)) return 2;
+  if (title.includes(normalizedQuery)) return 1;
+
+  return 0;
+};
+
+export const prioritizeRecipesByTitleMatch = (
+  recipes: NormalizedRecipe[],
+  query: string,
+): NormalizedRecipe[] => {
+  const normalizedQuery = query.trim();
+  if (!normalizedQuery) {
+    return recipes;
+  }
+
+  return recipes
+    .map((recipe, index) => ({
+      recipe,
+      index,
+      score: getTitleMatchScore(recipe, normalizedQuery),
+    }))
+    .sort((left, right) => {
+      if (left.score !== right.score) {
+        return right.score - left.score;
+      }
+
+      return left.index - right.index;
+    })
+    .map(({ recipe }) => recipe);
+};

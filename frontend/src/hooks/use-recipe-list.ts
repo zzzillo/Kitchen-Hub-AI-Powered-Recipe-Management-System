@@ -5,6 +5,7 @@ import {
   getCategoryOptions,
   matchesCategory,
   normalizeRecipes,
+  prioritizeRecipesByTitleMatch,
   sortRecipes,
   type RecipeSortOption,
 } from "@/utils/recipe-utils";
@@ -128,7 +129,10 @@ export const useRecipeList = ({ backendUrl }: UseRecipeListOptions) => {
     isUserMenuOpen,
     setIsUserMenuOpen,
     categoryOptions: getCategoryOptions(recipes),
-    visibleRecipes: recipes.filter((recipe) => matchesCategory(recipe, selectedCategory)),
+    visibleRecipes: prioritizeRecipesByTitleMatch(
+      recipes.filter((recipe) => matchesCategory(recipe, selectedCategory)),
+      searchQuery,
+    ),
     createRecipe,
     searchRecipe,
     handleLogout,
