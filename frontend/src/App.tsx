@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'rea
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage'));
-const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const HomePage = lazy(() => import('./pages/HomePage'));
 const CreateRecipePage = lazy(() => import('./pages/CreateRecipePage'));

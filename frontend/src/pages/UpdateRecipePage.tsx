@@ -94,12 +94,10 @@ const updateRecipe = async (data: RecipeFormData) => {
             <InputRecipe initialData={recipeData} onSave={updateRecipe} allowAssistant={false} isSaving={isSaving}/>
             
             {popupMessage && (
-                <div className="fixed inset-0 z-30 flex items-center justify-center bg-[rgba(17,29,19,0.22)] px-4 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200">
-                    <Message 
-                        message={popupMessage} 
-                        onClose={() => setPopupMessage(null)} 
-                    />
-                </div>
+                <Message 
+                    message={popupMessage} 
+                    onClose={() => setPopupMessage(null)} 
+                />
             )}
         </div>
     );

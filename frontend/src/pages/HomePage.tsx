@@ -177,9 +177,12 @@ const HomePage = () => {
       )}
 
       {logoutMessage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(17,29,19,0.22)] px-4 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200">
-          <Message message={logoutMessage} onClose={handleLogoutMessageClose} />
-        </div>
+        <Message
+          message={logoutMessage}
+          onClose={handleLogoutMessageClose}
+          autoCloseMs={1000}
+          showCloseButton={false}
+        />
       )}
     </div>
   );

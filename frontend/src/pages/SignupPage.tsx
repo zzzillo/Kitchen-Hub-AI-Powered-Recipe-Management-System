@@ -150,9 +150,7 @@ const SignupPage = () => {
                 </div>
             </div>
             {showMessage && (
-                <div className='fixed inset-0 z-20 flex items-center justify-center bg-[rgba(17,29,19,0.22)] px-4'>
-                    <Message message={messageText} onClose={handleCloseMessage}/>
-                </div>
+                <Message message={messageText} onClose={handleCloseMessage}/>
             )}
         </div>  
     )

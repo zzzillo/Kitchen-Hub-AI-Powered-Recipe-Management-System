@@ -21,18 +21,18 @@ const FeatureCard = ({ feature }: FeatureCardProps) => {
 
   const imageBlock = (
     <div className="mx-auto w-fit rounded-[2rem] border border-[#d7e1d8] bg-white p-6 sm:p-7 md:mx-0 md:p-5 lg:mr-6 lg:p-6 xl:mr-10 xl:p-7">
-      <div className="overflow-hidden rounded-[1.5rem]">
+      <div className="group overflow-hidden rounded-[1.5rem]">
         <img
           src={feature.imageSrc}
           alt={feature.imageAlt}
-          className="block aspect-square w-[17rem] rounded-[1.5rem] object-cover object-center sm:w-[21rem] md:w-[16rem] lg:w-[20rem] xl:w-[25rem]"
+          className="block aspect-square w-[17rem] rounded-[1.5rem] object-cover object-center transition duration-500 group-hover:scale-[1.04] sm:w-[21rem] md:w-[16rem] lg:w-[20rem] xl:w-[25rem]"
         />
       </div>
     </div>
   );
 
   return (
-    <article className="overflow-hidden bg-transparent text-[#223426] transition duration-300 hover:-translate-y-1">
+    <article className="overflow-hidden bg-transparent text-[#223426]">
       <div className="grid gap-0 md:grid-cols-[0.88fr_1.12fr] lg:grid-cols-[0.9fr_1.1fr]">
         <div className={`p-4 sm:p-5 md:p-4 lg:p-5 ${feature.reverseOnDesktop ? "md:order-2 md:justify-self-end" : "md:order-1"}`}>
           {imageBlock}
