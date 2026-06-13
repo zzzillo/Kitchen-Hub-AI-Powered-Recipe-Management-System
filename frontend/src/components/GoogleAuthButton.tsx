@@ -21,6 +21,9 @@ const GoogleAuthButton = ({
     }
 
     let cancelled = false;
+    let lastRenderedWidth = 0;
+    let resizeFrame = 0;
+    let resizeObserver: ResizeObserver | null = null;
 
     const renderGoogleButton = () => {
       if (cancelled || !window.google?.accounts?.id || !containerRef.current) {
@@ -31,6 +34,13 @@ const GoogleAuthButton = ({
       if (!wrapper) {
         return;
       }
+
+      const nextWidth = Math.min(wrapper.offsetWidth || 320, 360);
+      if (nextWidth === lastRenderedWidth && wrapper.childElementCount > 0) {
+        return;
+      }
+
+      lastRenderedWidth = nextWidth;
 
       wrapper.innerHTML = "";
       window.google.accounts.id.initialize({
@@ -46,15 +56,41 @@ const GoogleAuthButton = ({
         theme: "outline",
         size: "large",
         shape: "pill",
-        width: Math.min(wrapper.offsetWidth || 320, 360),
+        width: nextWidth,
         text,
       });
     };
 
+    const watchWrapperSize = () => {
+      if (!containerRef.current || resizeObserver) {
+        return;
+      }
+
+      const wrapper = containerRef.current.querySelector<HTMLElement>("[data-google-button-slot]");
+      if (!wrapper) {
+        return;
+      }
+
+      resizeObserver = new ResizeObserver(() => {
+        if (resizeFrame) {
+          cancelAnimationFrame(resizeFrame);
+        }
+
+        resizeFrame = requestAnimationFrame(renderGoogleButton);
+      });
+
+      resizeObserver.observe(wrapper);
+    };
+
     if (window.google?.accounts?.id) {
       renderGoogleButton();
+      watchWrapperSize();
       return () => {
         cancelled = true;
+        if (resizeFrame) {
+          cancelAnimationFrame(resizeFrame);
+        }
+        resizeObserver?.disconnect();
       };
     }
 
@@ -62,17 +98,24 @@ const GoogleAuthButton = ({
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
-    script.onload = renderGoogleButton;
+    script.onload = () => {
+      renderGoogleButton();
+      watchWrapperSize();
+    };
     document.head.appendChild(script);
 
     return () => {
       cancelled = true;
+      if (resizeFrame) {
+        cancelAnimationFrame(resizeFrame);
+      }
+      resizeObserver?.disconnect();
     };
   }, [disabled, onCredential, text]);
 
   if (!googleClientId) {
     return (
-      <div className="mx-auto w-full rounded-[0.95rem] border border-dashed border-[#d7e1d8] px-4 py-3 text-center text-sm text-[#617466] lg:max-w-[22.5rem]">
+      <div className="mx-auto w-full max-w-[22.5rem] rounded-[0.95rem] border border-dashed border-[#d7e1d8] px-4 py-3 text-center text-sm text-[#617466]">
         Google login will appear after <code>VITE_GOOGLE_CLIENT_ID</code> is configured.
       </div>
     );
@@ -80,7 +123,7 @@ const GoogleAuthButton = ({
 
   return (
     <div ref={containerRef} className="flex w-full justify-center">
-      <div data-google-button-slot className="min-h-11 w-full lg:max-w-[22.5rem]" />
+      <div data-google-button-slot className="min-h-11 w-full max-w-[22.5rem]" />
     </div>
   );
 };
