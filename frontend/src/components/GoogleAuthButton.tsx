@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -14,6 +14,7 @@ const GoogleAuthButton = ({
   disabled = false,
 }: GoogleAuthButtonProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
     if (disabled || !googleClientId || !containerRef.current) {
@@ -23,6 +24,7 @@ const GoogleAuthButton = ({
     let cancelled = false;
     let lastRenderedWidth = 0;
     let resizeFrame = 0;
+    let revealTimeout = 0;
     let resizeObserver: ResizeObserver | null = null;
 
     const renderGoogleButton = () => {
@@ -41,6 +43,7 @@ const GoogleAuthButton = ({
       }
 
       lastRenderedWidth = nextWidth;
+      setIsRendered(false);
 
       wrapper.innerHTML = "";
       window.google.accounts.id.initialize({
@@ -59,6 +62,16 @@ const GoogleAuthButton = ({
         width: nextWidth,
         text,
       });
+
+      if (revealTimeout) {
+        window.clearTimeout(revealTimeout);
+      }
+
+      revealTimeout = window.setTimeout(() => {
+        if (!cancelled) {
+          setIsRendered(true);
+        }
+      }, 120);
     };
 
     const watchWrapperSize = () => {
@@ -90,6 +103,9 @@ const GoogleAuthButton = ({
         if (resizeFrame) {
           cancelAnimationFrame(resizeFrame);
         }
+        if (revealTimeout) {
+          window.clearTimeout(revealTimeout);
+        }
         resizeObserver?.disconnect();
       };
     }
@@ -109,6 +125,9 @@ const GoogleAuthButton = ({
       if (resizeFrame) {
         cancelAnimationFrame(resizeFrame);
       }
+      if (revealTimeout) {
+        window.clearTimeout(revealTimeout);
+      }
       resizeObserver?.disconnect();
     };
   }, [disabled, onCredential, text]);
@@ -123,7 +142,10 @@ const GoogleAuthButton = ({
 
   return (
     <div ref={containerRef} className="flex w-full justify-center">
-      <div data-google-button-slot className="min-h-11 w-full max-w-[22.5rem]" />
+      <div
+        data-google-button-slot
+        className={`min-h-11 w-full max-w-[22.5rem] transition-opacity duration-150 ${isRendered ? "opacity-100" : "opacity-0"}`}
+      />
     </div>
   );
 };

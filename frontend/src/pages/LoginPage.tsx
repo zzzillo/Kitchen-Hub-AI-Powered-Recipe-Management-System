@@ -123,12 +123,12 @@ const LoginPage = () => {
     };
 
     return (
-        <div className='relative flex min-h-screen items-center justify-center overflow-hidden p-2.5'>
-            <div className='absolute inset-0 -z-10 h-full w-full'>
+        <div className='relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f8faf7] p-2.5 lg:bg-transparent'>
+            <div className='absolute inset-0 -z-10 hidden h-full w-full lg:block'>
                 <LoginBackground />
             </div>
             <div className='mx-auto w-full max-w-6xl'>
-                <div className='mx-auto grid w-full max-w-6xl grid-cols-1 overflow-hidden rounded-[22px] bg-white shadow-[0_18px_48px_rgba(32,55,41,0.08)] motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-500 lg:min-h-[44rem] lg:grid-cols-[0.92fr_1.08fr]'>
+                <div className='mx-auto grid w-full max-w-6xl grid-cols-1 overflow-hidden rounded-[22px] bg-[#f8faf7] shadow-none motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-500 lg:min-h-[44rem] lg:grid-cols-[0.92fr_1.08fr] lg:bg-white lg:shadow-[0_18px_48px_rgba(32,55,41,0.08)]'>
                     <div className='relative hidden overflow-hidden motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-left-4 motion-safe:duration-500 lg:flex'>
                         <img
                             src={AuthSideIllustration}
